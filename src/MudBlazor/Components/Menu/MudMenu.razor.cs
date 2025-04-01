@@ -330,6 +330,16 @@ namespace MudBlazor
         public bool DropShadow { get; set; } = true;
 
         /// <summary>
+        /// Prevents interaction with background elements while this menu is open.
+        /// </summary>
+        /// <remarks>
+        /// Defaults to <c>true</c>.
+        /// </remarks>
+        [Parameter]
+        [Category(CategoryTypes.Menu.PopupBehavior)]
+        public bool Modal { get; set; } = true;
+
+        /// <summary>
         /// The <see cref="MudMenuItem" /> components within this menu.
         /// </summary>
         [Parameter]

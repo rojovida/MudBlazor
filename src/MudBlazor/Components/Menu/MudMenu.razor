@@ -92,6 +92,11 @@
     </MudPopover>
     @if (ParentMenu is null)
     {
-        <MudOverlay Class="mud-skip-overlay-positioning" Visible="_openState.Value && !_isTransient" AutoClose OnClosed="CloseMenuAsync" LockScroll="LockScroll" />        
-    }    
+        <MudOverlay Class="mud-skip-overlay-positioning"
+                    Visible="_openState.Value && !_isTransient"
+                    AutoClose
+                    OnClosed="CloseMenuAsync"
+                    LockScroll="LockScroll"
+                    Modal="@Modal" />
+    }
 </div>
