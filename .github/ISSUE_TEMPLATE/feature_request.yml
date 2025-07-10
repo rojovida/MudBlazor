@@ -1,11 +1,12 @@
 name: Feature Request
-description: Suggest an idea for this project
+description: Suggest a new feature or improvement
 labels: [triage, enhancement]
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out this feature request for [MudBlazor](https://mudblazor.com). Note: this template is only for feature requests. Please use [Github Discussions](https://github.com/MudBlazor/MudBlazor/discussions) or [Discord](https://discord.gg/mudblazor) for any questions.
+        This template is for **suggesting new features** in MudBlazor.
+        If you have a question, please use [GitHub Discussions](https://github.com/MudBlazor/MudBlazor/discussions) or [Discord](https://discord.gg/mudblazor).
   - type: dropdown
     id: enhancement-type
     attributes:
@@ -20,40 +21,35 @@ body:
   - type: input
     id: component-name
     attributes:
-      label: Component name
-      description: If this feature request is about a component, please provide the name.
+      label: Component name (if applicable)
       placeholder: MudComponent
   - type: textarea
     id: related-problem
     attributes:
-      label: Is your feature request related to a problem?
-      description: Please provide a clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
-      placeholder: Describe your problem!
+      label: What problem does this solve?
+      description: Explain the problem or limitation this feature would solve.
   - type: textarea
     id: expected-behavior
     attributes:
-      label: Describe the solution you'd like
-      description: Please provide a clear and concise description of what you want to happen.
-      placeholder: Describe your request!
+      label: Describe your idea
+      description: Explain how the new feature should work.
     validations:
       required: true
   - type: textarea
     id: examples
     attributes:
-      label: Have you seen this feature anywhere else?
-      description: Please provide links to the Material Design guidelines, other implementations, or screenshots or videos of the expected behavior if possible.
-      placeholder: Show us examples!
+      label: Examples or references
+      description: To maximize your chances of getting this implemented, share links, screenshots, or docs you found online with similar features.
   - type: textarea
     id: alternatives
     attributes:
-      label: Describe alternatives you've considered
-      description: Please provide a clear and concise description of any alternative solutions or features you've considered.
-      placeholder: Describe alternatives!
+      label: Alternatives you tried
+      description: Describe other solutions or work-arounds you tried or considered.
   - type: checkboxes
     id: terms
     attributes:
       label: Code of Conduct
-      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/MudBlazor/MudBlazor/blob/dev/CODE_OF_CONDUCT.md).
+      description: By submitting, you agree to follow our [Code of Conduct](https://github.com/MudBlazor/MudBlazor/blob/dev/CODE_OF_CONDUCT.md).
       options:
         - label: I agree to follow this project's Code of Conduct
           required: true
