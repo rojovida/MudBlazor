@@ -36,7 +36,7 @@ async function findUnlabeledUncommentedIssues(octokit, repo, limit = 10) {
                 repo: repo.repo,
                 state: 'open',
                 sort: 'created',
-                direction: 'asc',
+                direction: 'desc',
                 per_page: 100, // Maximum per page
                 page: page
             });
