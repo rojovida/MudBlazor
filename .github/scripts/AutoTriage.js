@@ -186,7 +186,8 @@ Analyze this issue and provide your structured response.`;
                         required: ["reason", "comment", "action", "labels"]
                     }
                 }
-            })
+            }),
+            timeout: 60000
         }
     );
 
@@ -323,7 +324,7 @@ async function processIssue(issueOrPR, repo, githubToken, geminiApiKey) {
     const isIssue = !issueOrPR.pull_request;
     const itemType = isIssue ? 'issue' : 'pull request';
     const itemText = `${issueOrPR.title}\n\n${issueOrPR.body || ''}`;
-    
+
     console.log(`📝 Processing ${itemType} #${issueOrPR.number}: ${issueOrPR.title}`);
 
     // Skip locked issues
@@ -339,7 +340,9 @@ async function processIssue(issueOrPR, repo, githubToken, geminiApiKey) {
         updated_at: issueOrPR.updated_at,
         author: issueOrPR.user?.login || 'unknown',
         comments_count: issueOrPR.comments || 0,
-        reactions_total: (issueOrPR.reactions?.total_count || 0)
+        reactions_total: (issueOrPR.reactions?.total_count || 0),
+        state: issueOrPR.state,
+        type: issueOrPR.pull_request ? 'pull_request' : 'issue'
     };
 
     // Analyze using the same AI logic with metadata
@@ -368,24 +371,6 @@ async function processIssue(issueOrPR, repo, githubToken, geminiApiKey) {
     return analysis;
 }
 
-// Main execution with retry logic
-async function runScript() {
-    const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-    const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-    const issue = github.context.payload.issue;
-    const pullRequest = github.context.payload.pull_request;
-    const repo = github.context.repo;
-
-    // Handle both issues and pull requests using the shared processIssue function
-    if (issue) {
-        await processIssue(issue, repo, GITHUB_TOKEN, GEMINI_API_KEY);
-    } else if (pullRequest) {
-        await processIssue(pullRequest, repo, GITHUB_TOKEN, GEMINI_API_KEY);
-    } else {
-        core.warning('No issue or pull request context found. Skipping.');
-        return;
-    }
-}
 
 // Export functions for testing if this file is being imported
 if (typeof module !== 'undefined' && module.exports) {
@@ -397,32 +382,30 @@ if (typeof module !== 'undefined' && module.exports) {
         closeIssue,
         postQualityComment,
         getValidLabels: () => validLabels,
-        // Export these constants for reuse
         dryRun,
         verbose,
         aiModel
     };
 }
 
-// Only run the main script if this file is executed directly (not imported)
+// Only run the main script if this file is executed directly (not imported).
+// If it fails the backlog script will catch it later.
 if (require.main === module) {
     (async () => {
-        try {
-            await runScript();
-        } catch (error) {
-            console.log(`❌ First attempt failed: ${error.message}`);
-            console.log('⏳ Waiting 30 seconds before retry...');
+        const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+        const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+        const issue = github.context.payload.issue;
+        const pullRequest = github.context.payload.pull_request;
+        const repo = github.context.repo;
 
-            // Single retry with delay to handle transient API issues
-            await new Promise(resolve => setTimeout(resolve, 30000));
-
-            try {
-                console.log('🔄 Retrying...');
-                await runScript();
-                console.log('✅ Retry successful');
-            } catch (retryError) {
-                core.setFailed(`❌ Script failed after retry: ${retryError.message}`);
-            }
+        // Handle both issues and pull requests using the shared processIssue function
+        if (issue) {
+            await processIssue(issue, repo, GITHUB_TOKEN, GEMINI_API_KEY);
+        } else if (pullRequest) {
+            await processIssue(pullRequest, repo, GITHUB_TOKEN, GEMINI_API_KEY);
+        } else {
+            core.setFailed('⚠️ No issue or pull request context found.');
+            return;
         }
     })();
 }
